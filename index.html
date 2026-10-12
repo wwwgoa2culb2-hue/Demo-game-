@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WinGo Demo with Secret Preview</title>
+    <title>WinGo Smooth Demo Game</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
         body { background-color: #f1f3f6; color: #333; display: flex; flex-direction: column; align-items: center; padding-bottom: 50px; }
@@ -31,6 +31,12 @@
         .bg-violet { background-color: #9b59b6; }
         .bg-red { background-color: #e74c3c; }
 
+        /* Number Grid 0-9 */
+        .number-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; background: #fff; padding: 10px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #e1e2e6; }
+        .num-circle { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; font-weight: bold; justify-self: center; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
+        .c-0 { background: linear-gradient(135deg, #9b59b6 50%, #e74c3c 50%); }
+        .c-5 { background: linear-gradient(135deg, #9b59b6 50%, #27ae60 50%); }
+
         .bs-row { display: flex; gap: 10px; margin-bottom: 10px; }
         .btn-bs { flex: 1; padding: 12px; border: none; border-radius: 8px; color: white; font-weight: bold; font-size: 15px; cursor: pointer; }
         .btn-big { background-color: #f39c12; }
@@ -40,10 +46,7 @@
         .amt-btn { flex: 1; padding: 6px; background: #fff; border: 1px solid #ccc; border-radius: 4px; font-size: 12px; font-weight: bold; cursor: pointer; text-align: center; }
         .amt-btn.active { background: #e74c3c; color: white; border-color: #e74c3c; }
 
-        .active-bet-box { background: #eef2f7; padding: 8px; border-radius: 6px; font-size: 12px; margin-bottom: 10px; text-align: center; color: #333; }
-
-        /* Secret Admin Preview Box inside Admin Panel */
-        .preview-box { background: #0f172a; border: 1px dashed #f39c12; padding: 10px; border-radius: 6px; margin-bottom: 10px; font-size: 13px; color: #f39c12; }
+        .active-bet-box { background: #eef2f7; padding: 10px; border-radius: 6px; font-size: 13px; margin-bottom: 5px; text-align: center; color: #333; font-weight: bold; border: 1px solid #d1d5db; }
 
         /* History */
         .history-box { margin-top: 15px; }
@@ -55,6 +58,7 @@
         /* Admin Panel */
         .admin-box { width: 100%; max-width: 420px; background: #1e293b; color: white; padding: 15px; border-radius: 10px; margin-top: 15px; }
         .admin-box h3 { color: #f39c12; font-size: 15px; margin-bottom: 10px; border-bottom: 1px solid #334155; padding-bottom: 5px; }
+        .preview-box { background: #0f172a; border: 1px dashed #f39c12; padding: 10px; border-radius: 6px; margin-bottom: 10px; font-size: 13px; color: #f39c12; }
         .admin-group { margin-bottom: 10px; }
         .admin-group label { display: block; font-size: 12px; color: #cbd5e1; margin-bottom: 3px; }
         .admin-group select, .admin-group input { width: 100%; padding: 8px; background: #0f172a; color: white; border: 1px solid #475569; border-radius: 5px; font-size: 13px; }
@@ -65,7 +69,7 @@
 
     <div class="header">
         <span>&larr;</span>
-        <span>WinGo Practice Demo</span>
+        <span>WinGo Smooth Demo</span>
         <span>&#127918;</span>
     </div>
 
@@ -74,7 +78,7 @@
         <div class="wallet-card">
             <div style="font-size:12px; color:#666;">Practice Wallet Balance</div>
             <div class="wallet-bal">₹<span id="balance">1000.00</span></div>
-            <div class="wallet-info">No Real Money / Practice Mode Only</div>
+            <div class="wallet-info">No Real Money / Smooth Practice Mode</div>
         </div>
 
         <!-- Timer Card -->
@@ -100,19 +104,35 @@
                 <div class="amt-btn" onclick="setAmount(1000, this)">1000</div>
             </div>
 
-            <div class="section-title">2. Choose Color / Size & Play</div>
+            <div class="section-title">2. Choose Color / Number / Size</div>
+            
             <div class="color-row">
                 <button class="btn-col bg-green" onclick="placeBet('Green', 'Color')">Green</button>
                 <button class="btn-col bg-violet" onclick="placeBet('Violet', 'Color')">Violet</button>
                 <button class="btn-col bg-red" onclick="placeBet('Red', 'Color')">Red</button>
             </div>
+
+            <!-- Number Grid 0-9 -->
+            <div class="number-grid">
+                <div class="num-circle c-0" onclick="placeBet('0', 'Number')">0</div>
+                <div class="num-circle bg-green" onclick="placeBet('1', 'Number')">1</div>
+                <div class="num-circle bg-red" onclick="placeBet('2', 'Number')">2</div>
+                <div class="num-circle bg-green" onclick="placeBet('3', 'Number')">3</div>
+                <div class="num-circle bg-red" onclick="placeBet('4', 'Number')">4</div>
+                <div class="num-circle c-5" onclick="placeBet('5', 'Number')">5</div>
+                <div class="num-circle bg-red" onclick="placeBet('6', 'Number')">6</div>
+                <div class="num-circle bg-green" onclick="placeBet('7', 'Number')">7</div>
+                <div class="num-circle bg-red" onclick="placeBet('8', 'Number')">8</div>
+                <div class="num-circle bg-green" onclick="placeBet('9', 'Number')">9</div>
+            </div>
+
             <div class="bs-row">
                 <button class="btn-bs btn-big" onclick="placeBet('Big', 'Size')">Big (5-9)</button>
                 <button class="btn-bs btn-small" onclick="placeBet('Small', 'Size')">Small (0-4)</button>
             </div>
 
             <div class="active-bet-box" id="current-bet-status">
-                Current Selection: None
+                Selected Bet: None
             </div>
         </div>
 
@@ -133,11 +153,9 @@
         </div>
     </div>
 
-    <!-- Admin Panel with Live Preview -->
+    <!-- Admin Panel -->
     <div class="admin-box">
-        <h3>⚙️ Admin Control & Next Result Preview</h3>
-        
-        <!-- Live Preview Box -->
+        <h3>⚙️ Admin Control & Preview</h3>
         <div class="preview-box" id="preview-display">
             🔮 <b>Upcoming Result:</b> Calculating...
         </div>
@@ -182,9 +200,11 @@
         function placeBet(choice, category) {
             if (balance >= selectedAmount) {
                 userBet = { type: choice, category: category, amount: selectedAmount };
-                document.getElementById('current-bet-status').innerHTML = `<b>Bet Placed:</b> ₹${selectedAmount} on <span style="color:#e74c3c; font-weight:bold;">${choice}</span>`;
+                // बिना किसी पॉप-अप अलर्ट के चुपचाप सलेक्टेड बेट दिखाएगा
+                document.getElementById('current-bet-status').innerHTML = `Selected Bet: ₹${selectedAmount} on <span style="color:#e74c3c;">${choice}</span> (${category})`;
             } else {
-                alert("Insufficient practice balance!");
+                // यहाँ सिर्फ बैलेंस कम होने पर चेतावनी दी जाएगी
+                document.getElementById('current-bet-status').innerHTML = `<span style="color:red;">Insufficient Balance!</span>`;
             }
         }
 
@@ -202,7 +222,7 @@
             forceCol = document.getElementById('admin-color').value;
             forceNum = document.getElementById('admin-num').value;
             updatePreviewText();
-            alert("Next result has been successfully locked!");
+            // एडमिन सेटिंग सेव होने पर भी कोई रुकावट वाला अलर्ट नहीं, बल्कि सिर्फ प्रिवव्यू अपडेट होगा
         }
 
         function renderHistory() {
@@ -251,16 +271,14 @@
                     let won = false;
                     if (userBet.category === 'Color' && userBet.type === finalCol) won = true;
                     if (userBet.category === 'Size' && userBet.type === finalSize) won = true;
+                    if (userBet.category === 'Number' && parseInt(userBet.type) === finalNum) won = true;
 
                     if (won) {
-                        let winReward = userBet.amount * 2;
+                        let winReward = userBet.category === 'Number' ? userBet.amount * 9 : userBet.amount * 2;
                         balance += winReward;
-                        alert(`Congratulations! You won ₹${winReward} in Period ${period - 1}`);
-                    } else {
-                        alert(`You lost ₹${userBet.amount} in Period ${period - 1}`);
                     }
                     userBet = null;
-                    document.getElementById('current-bet-status').innerHTML = `Current Selection: None`;
+                    document.getElementById('current-bet-status').innerHTML = `Selected Bet: None`;
                 }
 
                 document.getElementById('balance').innerText = balance.toFixed(2);
@@ -275,7 +293,6 @@
                 if(historyList.length > 5) historyList.pop();
                 renderHistory();
 
-                // Reset
                 forceCol = "Auto";
                 forceNum = "";
                 document.getElementById('admin-color').value = "Auto";
