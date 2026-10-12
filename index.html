@@ -1,233 +1,665 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WinGo Game</title>
+    <title>Daman Games - WinGo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
+
         body {
-            background-color: #0f172a;
+            background-color: #09090b;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 414px;
+            background-color: #121214;
+            min-height: 100vh;
+            padding-bottom: 70px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            position: relative;
+        }
+
+        /* Top Header */
+        .header {
+            background-color: #1a1a1e;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #28282e;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header .logo {
+            font-size: 20px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #f39c12, #f1c40f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 15px;
+            color: #d1d5db;
+            font-size: 18px;
+        }
+
+        /* Wallet Card */
+        .wallet-card {
+            background: linear-gradient(135deg, #2c2d35 0%, #1e1f25 100%);
+            margin: 15px;
+            padding: 18px;
+            border-radius: 16px;
+            border: 1px solid #3a3b45;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+        }
+
+        .balance-title {
+            font-size: 12px;
+            color: #9ca3af;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .balance-amount {
+            font-size: 26px;
+            font-weight: 800;
+            margin: 8px 0 15px 0;
+            color: #ffffff;
+        }
+
+        .wallet-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-deposit {
+            flex: 1;
+            background: linear-gradient(90deg, #f39c12, #e67e22);
             color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(243, 156, 18, 0.3);
+        }
+
+        .btn-withdraw {
+            flex: 1;
+            background: #282932;
+            color: #d1d5db;
+            border: 1px solid #3a3b45;
+            padding: 10px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* Game Time Tabs */
+        .time-tabs {
+            display: flex;
+            background-color: #1a1a1e;
+            margin: 0 15px 15px 15px;
+            border-radius: 12px;
+            padding: 4px;
+            border: 1px solid #2a2b32;
+        }
+
+        .time-tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 12px;
+            color: #9ca3af;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .time-tab.active {
+            background: linear-gradient(135deg, #f39c12, #d35400);
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .time-tab i {
+            display: block;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        /* Game Area Card */
+        .game-area {
+            background-color: #1a1a1e;
+            margin: 0 15px 15px 15px;
+            border-radius: 16px;
+            padding: 15px;
+            border: 1px solid #2d2e38;
+        }
+
+        .period-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed #33343f;
+            margin-bottom: 15px;
+        }
+
+        .period-box h4 {
+            font-size: 12px;
+            color: #9ca3af;
+            font-weight: 500;
+        }
+
+        .period-box p {
+            font-size: 16px;
+            font-weight: 700;
+            color: #f39c12;
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .timer-box {
+            text-align: right;
+        }
+
+        .timer-box h4 {
+            font-size: 12px;
+            color: #9ca3af;
+            font-weight: 500;
+        }
+
+        .timer-digits {
+            display: flex;
+            gap: 4px;
+            margin-top: 4px;
+            justify-content: flex-end;
+        }
+
+        .timer-digit {
+            background-color: #272832;
+            color: #f39c12;
+            font-size: 18px;
+            font-weight: 800;
+            padding: 4px 6px;
+            border-radius: 4px;
+            min-width: 24px;
+            text-align: center;
+            border: 1px solid #3d3e4d;
+        }
+
+        /* Color Buttons */
+        .color-btns {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .c-btn {
+            flex: 1;
+            padding: 12px 0;
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            gap: 5px;
         }
-        .container {
-            width: 100%;
-            max-width: 420px;
-            background-color: #1e293b;
-            padding: 16px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-        }
-        .header {
-            text-align: center;
-            padding-bottom: 12px;
-            border-bottom: 1px solid #334155;
-            margin-bottom: 16px;
-        }
-        .header h2 {
-            color: #38bdf8;
-            font-size: 22px;
-        }
-        .game-card {
-            background: #0f172a;
-            border-radius: 10px;
-            padding: 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            border: 1px solid #334155;
-        }
-        .period-info h4 {
-            color: #94a3b8;
-            font-size: 14px;
-        }
-        .period-info p {
-            font-size: 18px;
-            font-weight: bold;
-            color: #f8fafc;
-            margin-top: 4px;
-        }
-        .timer-info h4 {
-            color: #94a3b8;
-            font-size: 14px;
-            text-align: right;
-        }
-        .timer-box {
-            font-size: 24px;
-            font-weight: bold;
-            color: #ef4444;
-            margin-top: 4px;
-            text-align: right;
-        }
-        .bet-buttons {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-        .btn-green { background-color: #22c55e; color: white; }
-        .btn-violet { background-color: #8b5cf6; color: white; }
-        .btn-red { background-color: #ef4444; color: white; }
-        .btn {
-            flex: 1;
+
+        .btn-green-bg { background: linear-gradient(135deg, #22c55e, #15803d); }
+        .btn-violet-bg { background: linear-gradient(135deg, #a855f7, #6b21a8); }
+        .btn-red-bg { background: linear-gradient(135deg, #ef4444, #b91c1c); }
+
+        /* Number Grid */
+        .numbers-container {
+            background-color: #121215;
             padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 15px;
-            cursor: pointer;
+            border-radius: 12px;
+            margin-bottom: 15px;
         }
+
         .numbers-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             gap: 10px;
-            margin-bottom: 16px;
         }
-        .num-btn {
-            background-color: #334155;
-            color: white;
-            border: 1px solid #475569;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            text-align: center;
-        }
-        .big-small {
+
+        .num-circle {
+            aspect-ratio: 1;
+            border-radius: 50%;
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            font-weight: 800;
+            color: #ffffff;
+            cursor: pointer;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+            border: 2px solid transparent;
         }
-        .btn-big { background-color: #eab308; color: #000; flex: 1; font-weight: bold; padding: 12px; border-radius: 8px; border: none; cursor: pointer; }
-        .btn-small { background-color: #3b82f6; color: white; flex: 1; font-weight: bold; padding: 12px; border-radius: 8px; border: none; cursor: pointer; }
-        
+
+        .n-0 { background: linear-gradient(135deg, #a855f7 50%, #ef4444 50%); }
+        .n-5 { background: linear-gradient(135deg, #a855f7 50%, #22c55e 50%); }
+        .n-green { background: linear-gradient(135deg, #22c55e, #16a34a); }
+        .n-red { background: linear-gradient(135deg, #ef4444, #dc2626); }
+
+        /* Big Small */
+        .big-small-btns {
+            display: flex;
+            gap: 12px;
+        }
+
+        .bs-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 25px;
+            font-weight: 800;
+            font-size: 15px;
+            cursor: pointer;
+            color: #ffffff;
+        }
+
+        .btn-big-gold {
+            background: linear-gradient(135deg, #eab308, #ca8a04);
+            box-shadow: 0 4px 10px rgba(234, 179, 8, 0.3);
+        }
+
+        .btn-small-blue {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+        }
+
+        /* History Table */
+        .history-card {
+            background-color: #1a1a1e;
+            margin: 0 15px 15px 15px;
+            border-radius: 16px;
+            padding: 15px;
+            border: 1px solid #2d2e38;
+        }
+
+        .history-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #d1d5db;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
         .history-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
         }
-        .history-table th, .history-table td {
+
+        .history-table th {
+            color: #6b7280;
+            font-size: 11px;
+            padding: 8px 4px;
+            text-align: center;
+            border-bottom: 1px solid #2a2b35;
+            text-transform: uppercase;
+        }
+
+        .history-table td {
+            padding: 10px 4px;
+            text-align: center;
+            font-size: 12px;
+            border-bottom: 1px solid #22232b;
+        }
+
+        .badge-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .badge-green { background-color: #22c55e; }
+        .badge-red { background-color: #ef4444; }
+        .badge-violet { background-color: #a855f7; }
+
+        /* Modal Overlay */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        .modal-content {
+            background-color: #1a1a1e;
+            width: 100%;
+            max-width: 414px;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            padding: 20px;
+            border-top: 2px solid #f39c12;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .amount-selector {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .amt-chip {
+            flex: 1;
+            background-color: #272832;
             padding: 8px;
             text-align: center;
-            border-bottom: 1px solid #334155;
-            font-size: 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            border: 1px solid #3a3b48;
         }
-        .history-table th {
-            color: #94a3b8;
+
+        .amt-chip.active {
+            background: #f39c12;
+            color: #000;
+            font-weight: 700;
+        }
+
+        .btn-confirm {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(90deg, #f39c12, #e67e22);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-width: 414px;
+            background-color: #18181c;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 1px solid #282830;
+            z-index: 99;
+        }
+
+        .nav-item {
+            text-align: center;
+            color: #6b7280;
+            font-size: 11px;
+            text-decoration: none;
+        }
+
+        .nav-item i {
+            font-size: 18px;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .nav-item.active {
+            color: #f39c12;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div class="app-container">
+    <!-- Header -->
     <div class="header">
-        <h2>WinGo 1 Min</h2>
-    </div>
-
-    <div class="game-card">
-        <div class="period-info">
-            <h4>Period Number</h4>
-            <p id="period">20261012001</p>
-        </div>
-        <div class="timer-info">
-            <h4>Time Remaining</h4>
-            <div class="timer-box" id="timer">00:30</div>
+        <div class="logo"><i class="fa-solid fa-gem"></i> DAMAN</div>
+        <div class="header-icons">
+            <i class="fa-solid fa-headphones"></i>
+            <i class="fa-solid fa-bell"></i>
         </div>
     </div>
 
-    <div class="bet-buttons">
-        <button class="btn btn-green">Green</button>
-        <button class="btn btn-violet">Violet</button>
-        <button class="btn btn-red">Red</button>
+    <!-- Wallet Card -->
+    <div class="wallet-card">
+        <div class="balance-title">
+            <i class="fa-solid fa-wallet"></i> Total Balance
+        </div>
+        <div class="balance-amount">₹ <span id="userBalance">10,000.00</span></div>
+        <div class="wallet-actions">
+            <button class="btn-deposit" onclick="alert('Redirecting to Deposit Gateway...')">Deposit</button>
+            <button class="btn-withdraw" onclick="alert('Withdrawal Page')">Withdraw</button>
+        </div>
     </div>
 
-    <div class="numbers-grid">
-        <button class="num-btn">0</button>
-        <button class="num-btn">1</button>
-        <button class="num-btn">2</button>
-        <button class="num-btn">3</button>
-        <button class="num-btn">4</button>
-        <button class="num-btn">5</button>
-        <button class="num-btn">6</button>
-        <button class="num-btn">7</button>
-        <button class="num-btn">8</button>
-        <button class="num-btn">9</button>
+    <!-- Time Mode Tabs -->
+    <div class="time-tabs">
+        <div class="time-tab active" onclick="switchMode(1, this)">
+            <i class="fa-solid fa-clock"></i> WinGo 30s
+        </div>
+        <div class="time-tab" onclick="switchMode(60, this)">
+            <i class="fa-solid fa-clock"></i> WinGo 1Min
+        </div>
+        <div class="time-tab" onclick="switchMode(180, this)">
+            <i class="fa-solid fa-clock"></i> WinGo 3Min
+        </div>
+        <div class="time-tab" onclick="switchMode(300, this)">
+            <i class="fa-solid fa-clock"></i> WinGo 5Min
+        </div>
     </div>
 
-    <div class="big-small">
-        <button class="btn-big">Big</button>
-        <button class="btn-small">Small</button>
+    <!-- Game Card -->
+    <div class="game-area">
+        <div class="period-header">
+            <div class="period-box">
+                <h4>Period Number</h4>
+                <p id="periodNo">2026101210001</p>
+            </div>
+            <div class="timer-box">
+                <h4>Time Remaining</h4>
+                <div class="timer-digits">
+                    <span class="timer-digit" id="m1">0</span>
+                    <span class="timer-digit" id="m2">0</span>
+                    <span style="color:#f39c12; font-weight:bold; align-self:center;">:</span>
+                    <span class="timer-digit" id="s1">3</span>
+                    <span class="timer-digit" id="s2">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Color Bet Buttons -->
+        <div class="color-btns">
+            <button class="c-btn btn-green-bg" onclick="openBetModal('Green')">Green</button>
+            <button class="c-btn btn-violet-bg" onclick="openBetModal('Violet')">Violet</button>
+            <button class="c-btn btn-red-bg" onclick="openBetModal('Red')">Red</button>
+        </div>
+
+        <!-- Number Grid -->
+        <div class="numbers-container">
+            <div class="numbers-grid">
+                <div class="num-circle n-0" onclick="openBetModal('Number 0')">0</div>
+                <div class="num-circle n-green" onclick="openBetModal('Number 1')">1</div>
+                <div class="num-circle n-red" onclick="openBetModal('Number 2')">2</div>
+                <div class="num-circle n-green" onclick="openBetModal('Number 3')">3</div>
+                <div class="num-circle n-red" onclick="openBetModal('Number 4')">4</div>
+                <div class="num-circle n-5" onclick="openBetModal('Number 5')">5</div>
+                <div class="num-circle n-red" onclick="openBetModal('Number 6')">6</div>
+                <div class="num-circle n-green" onclick="openBetModal('Number 7')">7</div>
+                <div class="num-circle n-red" onclick="openBetModal('Number 8')">8</div>
+                <div class="num-circle n-green" onclick="openBetModal('Number 9')">9</div>
+            </div>
+        </div>
+
+        <!-- Big / Small Buttons -->
+        <div class="big-small-btns">
+            <button class="bs-btn btn-big-gold" onclick="openBetModal('Big')">Big</button>
+            <button class="bs-btn btn-small-blue" onclick="openBetModal('Small')">Small</button>
+        </div>
     </div>
 
-    <h3 style="margin-bottom: 10px; font-size: 16px; color: #94a3b8;">Game History</h3>
-    <table class="history-table">
-        <thead>
-            <tr>
-                <th>Period</th>
-                <th>Number</th>
-                <th>Big/Small</th>
-                <th>Color</th>
-            </tr>
-        </thead>
-        <tbody id="historyBody">
-            <tr>
-                <td>20261012000</td>
-                <td>7</td>
-                <td style="color: #eab308;">Big</td>
-                <td style="color: #22c55e;">Green</td>
-            </tr>
-        </tbody>
-    </table>
+    <!-- History Table -->
+    <div class="history-card">
+        <div class="history-title">
+            <span><i class="fa-solid fa-list-check"></i> Game History</span>
+            <span style="color:#f39c12; font-size:12px; cursor:pointer;" onclick="renderHistory()">Refresh</span>
+        </div>
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>Period</th>
+                    <th>Number</th>
+                    <th>Big/Small</th>
+                    <th>Color</th>
+                </tr>
+            </thead>
+            <tbody id="historyList">
+                <!-- Dynamic Rows -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="#" class="nav-item active">
+            <i class="fa-solid fa-gamepad"></i>
+            Game
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            Trend
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fa-solid fa-gift"></i>
+            Promote
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            My
+        </a>
+    </div>
+</div>
+
+<!-- Betting Modal Popup -->
+<div class="modal" id="betModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span>Select <span id="modalSelection" style="color:#f39c12;">Green</span></span>
+            <i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="closeModal()"></i>
+        </div>
+        <div style="font-size: 13px; color: #9ca3af;">Contract Money</div>
+        <div class="amount-selector">
+            <div class="amt-chip active" onclick="setMultiplier(1, this)">₹10</div>
+            <div class="amt-chip" onclick="setMultiplier(10, this)">₹100</div>
+            <div class="amt-chip" onclick="setMultiplier(100, this)">₹1000</div>
+        </div>
+        <button class="btn-confirm" onclick="confirmBet()">Confirm Bet</button>
+    </div>
 </div>
 
 <script>
-    let timeLeft = 30;
-    let periodNum = 20261012001;
+    let duration = 30;
+    let timer = duration;
+    let currentPeriod = 2026101210001;
+    let selectedBet = '';
+    let selectedAmount = 10;
+    let userBalance = 10000.00;
 
-    function updateTimer() {
-        let seconds = timeLeft < 10 ? "0" + timeLeft : timeLeft;
-        document.getElementById("timer").innerText = "00:" + seconds;
-        
-        if (timeLeft === 0) {
-            timeLeft = 30;
-            periodNum++;
-            document.getElementById("period").innerText = periodNum;
-            addNewHistory();
-        } else {
-            timeLeft--;
+    // Timer Logic
+    function startTimer() {
+        setInterval(() => {
+            let minutes = Math.floor(timer / 60);
+            let seconds = timer % 60;
+
+            document.getElementById('m1').innerText = Math.floor(minutes / 10);
+            document.getElementById('m2').innerText = minutes % 10;
+            document.getElementById('s1').innerText = Math.floor(seconds / 10);
+            document.getElementById('s2').innerText = seconds % 10;
+
+            if (timer === 0) {
+                generateResult();
+                timer = duration;
+                currentPeriod++;
+                document.getElementById('periodNo').innerText = currentPeriod;
+            } else {
+                timer--;
+            }
+        }, 1000);
+    }
+
+    function switchMode(sec, element) {
+        document.querySelectorAll('.time-tab').forEach(el => el.classList.remove('active'));
+        element.classList.add('active');
+        duration = sec;
+        timer = duration;
+    }
+
+    // Modal Control
+    function openBetModal(type) {
+        selectedBet = type;
+        document.getElementById('modalSelection').innerText = type;
+        document.getElementById('betModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('betModal').style.display = 'none';
+    }
+
+    function setMultiplier(multiplier, el) {
+        document.querySelectorAll('.amt-chip').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+        selectedAmount = 10 * multiplier;
+    }
+
+    function confirmBet() {
+        if(userBalance < selectedAmount) {
+            alert('Insufficient Balance!');
+            return;
         }
-    }
-
-    function addNewHistory() {
-        let randomNum = Math.floor(Math.random() * 10);
-        let bigSmall = randomNum >= 5 ? "Big" : "Small";
-        let color = randomNum % 2 === 0 ? "Red" : "Green";
-        
-        let historyBody = document.getElementById("historyBody");
-        let newRow = `
-            <tr>
-                <td>${periodNum - 1}</td>
-                <td>${randomNum}</td>
-                <td>${bigSmall}</td>
-                <td style="color: ${color === 'Red' ? '#ef4444' : '#22c55e'}">${color}</td>
-            </tr>
-        `;
-        historyBody.insertAdjacentHTML('afterbegin', newRow);
-    }
-
-    setInterval(updateTimer, 1000);
-</script>
-
-</body>
-</html>
+        userBalance -= selectedAmount;
+        document.getElementById('userBalance').innerText = userBalance.toFixed(2);
+        alert(`Bet placed successfully on ${selectedBet} for ₹
