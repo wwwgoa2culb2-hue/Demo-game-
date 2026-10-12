@@ -1,1 +1,627 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1"> <title>WinGo Demo Dashboard</title>  <style> * {   box-sizing: border-box; }  body {   margin: 0;   font-family: Arial, sans-serif;   background: #f1f4fa;   color: #263247; }  header {   background: linear-gradient(135deg, #f94865, #ff795c);   color: white;   text-align: center;   padding: 22px 10px;   font-size: 26px;   font-weight: bold; }  .notice {   margin: 12px;   padding: 12px;   background: #fff1d1;   border-radius: 10px;   text-align: center;   font-size: 13px; }  .panel {   background: white;   margin: 12px;   padding: 16px;   border-radius: 14px;   box-shadow: 0 3px 12px #0000000c; }  h3 {   margin-top: 0; }  .periods {   display: grid;   grid-template-columns: repeat(4, 1fr);   gap: 6px;   margin: 12px; }  button, select {   font-size: 14px;   cursor: pointer; }  .period {   border: 0;   padding: 12px 2px;   border-radius: 8px;   background: white; }  .period.active {   background: #f94865;   color: white; }  .timerbox {   background: linear-gradient(135deg, #f94865, #ff795c);   color: white;   text-align: center;   padding: 20px 10px;   border-radius: 12px; }  #timer {   font-size: 42px;   font-weight: bold;   margin: 10px; }  #periodId {   font-size: 12px;   overflow-wrap: anywhere; }  .grid3 {   display: grid;   grid-template-columns: repeat(3, 1fr);   gap: 8px; }  .colors button {   color: white;   border: none;   padding: 14px 2px;   border-radius: 9px; }  .green {   background: #16b66b; }  .red {   background: #f94865; }  .violet {   background: #a64de0; }  .numbers {   display: grid;   grid-template-columns: repeat(5, 1fr);   gap: 10px; }  .number {   height: 48px;   width: 100%;   border-radius: 50%;   border: 2px solid #eee;   background: white;   font-size: 21px;   font-weight: bold; }  .bigsmall {   display: grid;   grid-template-columns: 1fr 1fr;   gap: 8px;   margin-top: 12px; }  .bigsmall button {   padding: 14px 4px;   border: 0;   border-radius: 25px;   background: #efa348;   color: white; }  .bigsmall button:last-child {   background: #588ee8; }  .selection {   background: #f2f4fa;   border-radius: 10px;   padding: 12px;   margin-top: 14px;   line-height: 1.8;   overflow-wrap: anywhere; }  .preview {   background: #e9f8ef;   border: 1px solid #a8dfbd;   border-radius: 12px;   padding: 16px;   text-align: center; }  .preview-number {   font-size: 48px;   font-weight: bold;   margin: 8px; }  .preview-info {   font-size: 16px;   line-height: 1.9; }  .admin {   border: 2px solid #f0cf78;   background: #fffaf0; }  .admin label {   display: block;   margin-top: 13px;   font-size: 13px;   font-weight: bold; }  .admin select {   width: 100%;   padding: 12px;   margin-top: 6px;   border: 1px solid #ccc;   border-radius: 8px;   background: white; }  .action {   width: 100%;   padding: 13px;   margin-top: 12px;   border: 0;   border-radius: 8px;   color: white;   background: #303a50; }  .secondary {   background: #588ee8; }  .smallnote {   font-size: 12px;   line-height: 1.6;   color: #687386; }  .status {   padding: 10px;   background: #f1f4fa;   border-radius: 8px;   margin-top: 12px;   font-size: 13px;   line-height: 1.6;   overflow-wrap: anywhere; }  .history-wrap {   overflow-x: auto; }  .history {   width: 100%;   border-collapse: collapse;   font-size: 13px; }  .history th, .history td {   padding: 11px 5px;   border-bottom: 1px solid #eee;   text-align: center; }  .history th {   background: #f94865;   color: white; }  .badge {   display: inline-block;   padding: 5px 9px;   border-radius: 15px;   color: white;   font-size: 11px;   background: #303a50; }  footer {   text-align: center;   padding: 20px;   color: #687386;   font-size: 12px; } </style> </head>  <body>  <header>WinGo Demo Game</header>  <div class="notice">   DEMO ONLY — No real money, deposits or withdrawals.   The preview is not a prediction of any external game. </div>  <div class="periods">   <button class="period active" data-time="30">30 Sec</button>   <button class="period" data-time="60">1 Min</button>   <button class="period" data-time="180">3 Min</button>   <button class="period" data-time="300">5 Min</button> </div>  <div class="panel">   <div class="timerbox">     <div>TIME REMAINING</div>     <div id="timer">00:30</div>     <div id="periodId">Demo Round #1</div>   </div> </div>  <div class="panel">   <h3>Choose Color</h3>    <div class="grid3 colors">     <button class="green" data-color="Green">Green</button>     <button class="violet" data-color="Violet">Violet</button>     <button class="red" data-color="Red">Red</button>   </div>    <h3 style="margin-top:22px">Choose Number</h3>    <div class="numbers" id="numbers"></div>    <div class="bigsmall">     <button data-size="Big">BIG (5–9)</button>     <button data-size="Small">SMALL (0–4)</button>   </div>    <div class="selection" id="selection">     Your selection: None   </div> </div>  <div class="panel">   <h3>Next Round Preview</h3>    <div class="preview">     <span class="badge">DEMO RESULT</span>      <div class="preview-number" id="previewNumber">?</div>      <div class="preview-info">       <div id="previewRound">Round #1</div>       <div id="previewColor">Color: Waiting</div>       <div id="previewSize">Size: Waiting</div>       <div id="previewStatus">Status: Preview only</div>     </div>   </div>    <p class="smallnote">     This preview belongs to this demo game only.     It does not reveal results from any external game.   </p> </div>  <div class="panel admin">   <h3>Admin Dashboard</h3>    <p class="smallnote">     Choose the result for the next demo round.     The selected result will appear in the preview and     be recorded when the round finishes. This local demo     panel has no login or server protection.   </p>    <label for="adminNumber">Next Demo Number</label>    <select id="adminNumber">     <option value="auto">Automatic Random Demo</option>     <option value="0">0</option>     <option value="1">1</option>     <option value="2">2</option>     <option value="3">3</option>     <option value="4">4</option>     <option value="5">5</option>     <option value="6">6</option>     <option value="7">7</option>     <option value="8">8</option>     <option value="9">9</option>   </select>    <label for="adminColor">Next Demo Color</label>    <select id="adminColor">     <option value="auto">Automatic From Number</option>     <option value="Green">Green</option>     <option value="Red">Red</option>     <option value="Violet">Violet</option>   </select>    <button class="action" id="saveAdmin">     Save Next Demo Result   </button>    <button class="action secondary" id="randomAdmin">     Choose Random Demo Result   </button>    <div class="status" id="adminStatus">     Automatic demo mode is active.   </div> </div>  <div class="panel">   <h3>Game History</h3>    <div class="history-wrap">     <table class="history">       <thead>         <tr>           <th>Round</th>           <th>Number</th>           <th>Color</th>           <th>Size</th>         </tr>       </thead>        <tbody id="history"></tbody>     </table>   </div>    <button class="action" id="clearHistory">     Clear History   </button> </div>  <footer>   WinGo Demo Game — Practice Interface Only </footer>  <script> let duration = 30; let remaining = 30; let round = 1;  let pendingNumber = "auto"; let pendingColor = "auto";  let selected = {   number: null,   color: null,   size: null };  let results = []; let nextResult = null;  const $ = id => document.getElementById(id);  function colorFor(n) {   if (n === 0 || n === 5) return "Violet";   if ([1, 3, 7, 9].includes(n)) return "Green";   return "Red"; }  function sizeFor(n) {   return n >= 5 ? "Big" : "Small"; }  function randomResult() {   const n = Math.floor(Math.random() * 10);    return {     number: n,     color: colorFor(n),     size: sizeFor(n)   }; }  function makeNextResult() {   if (pendingNumber === "auto") {     return randomResult();   }    const n = Number(pendingNumber);    return {     number: n,     color: pendingColor === "auto"       ? colorFor(n)       : pendingColor,     size: sizeFor(n)   }; }  function colorCode(color) {   if (color === "Green") return "#16b66b";   if (color === "Red") return "#f94865";   return "#a64de0"; }  function updatePreview() {   if (!nextResult) {     nextResult = makeNextResult();   }    $("previewNumber").textContent = nextResult.number;   $("previewNumber").style.color =     colorCode(nextResult.color);    $("previewRound").textContent =     "Next Demo Round: #" + round;    $("previewColor").textContent =     "Color: " + nextResult.color;    $("previewSize").textContent =     "Size: " + nextResult.size;    $("previewStatus").textContent =     "Status: Waiting for demo round to finish"; }  function updateTimer() {   const minutes = Math.floor(remaining / 60);   const seconds = remaining % 60;    $("timer").textContent =     String(minutes).padStart(2, "0") + ":" +     String(seconds).padStart(2, "0");    $("periodId").textContent =     "Demo Round #" + round; }  function renderNumbers() {   const box = $("numbers");   box.innerHTML = "";    for (let n = 0; n <= 9; n++) {     const button = document.createElement("button");      button.className = "number";     button.textContent = n;     button.style.color = colorCode(colorFor(n));      if (selected.number === n) {       button.style.borderColor = "#efa348";       button.style.background = "#fff8e8";     }      button.onclick = () => {       selected.number = n;       selected.color = colorFor(n);       selected.size = sizeFor(n);        updateSelection();       renderNumbers();     };      box.appendChild(button);   } }  function updateSelection() {   $("selection").textContent =     "Your selection: " +     (selected.number === null       ? "No number"       : selected.number) +     " | Color: " + (selected.color || "None") +     " | Size: " + (selected.size || "None"); }  document.querySelectorAll(".colors button") .forEach(button => {   button.onclick = () => {     selected.color = button.dataset.color;     updateSelection();   }; });  document.querySelectorAll(".bigsmall button") .forEach(button => {   button.onclick = () => {     selected.size = button.dataset.size;     updateSelection();   }; });  document.querySelectorAll(".period") .forEach(button => {   button.onclick = () => {     document.querySelectorAll(".period")     .forEach(item => item.classList.remove("active"));      button.classList.add("active");      duration = Number(button.dataset.time);     remaining = duration;      updateTimer();   }; });  $("saveAdmin").onclick = () => {   pendingNumber = $("adminNumber").value;   pendingColor = $("adminColor").value;    nextResult = makeNextResult();    updatePreview();    $("adminStatus").textContent =     "Saved successfully. The next demo result is shown above."; };  $("randomAdmin").onclick = () => {   pendingNumber = "auto";   pendingColor = "auto";    $("adminNumber").value = "auto";   $("adminColor").value = "auto";    nextResult = randomResult();    updatePreview();    $("adminStatus").textContent =     "Random demo result selected for the next round."; };  function renderHistory() {   $("history").innerHTML = results.map(item =>      <tr>       <td>${item.round}</td>       <td>${item.number}</td>       <td>${item.color}</td>       <td>${item.size}</td>     </tr>   ).join(""); }  function finishRound() {   const result = nextResult || makeNextResult();    results.unshift({     round: round,     number: result.number,     color: result.color,     size: result.size   });    results = results.slice(0, 50);    renderHistory();    round++;    nextResult = makeNextResult();    updatePreview();   updateTimer(); }  $("clearHistory").onclick = () => {   results = [];   renderHistory(); };  setInterval(() => {   remaining--;    if (remaining <= 0) {     finishRound();     remaining = duration;   }    updateTimer(); }, 1000);  renderNumbers(); updateSelection();  nextResult = makeNextResult();  updatePreview(); updateTimer(); </script>  </body> </html> 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daman WinGo Demo</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        body { background-color: #f7f8ff; color: #333; display: flex; flex-direction: column; align-items: center; padding-bottom: 40px; }
+        
+        /* Top Navigation Bar */
+        .navbar { background: linear-gradient(90deg, #ff5e62, #ff9966); width: 100%; max-width: 450px; padding: 15px; color: white; display: flex; justify-content: space-between; align-items: center; font-size: 20px; font-weight: bold; }
+        
+        .main-card { width: 100%; max-width: 450px; background: white; padding: 12px; }
+        
+        /* Balance & Wallet */
+        .wallet-box { background: #f8f9fa; border-radius: 12px; padding: 15px; text-align: center; margin-bottom: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+        .balance-title { font-size: 13px; color: #666; }
+        .balance-amount { font-size: 24px; font-weight: bold; color: #333; margin: 5px 0; }
+        .wallet-btns { display: flex; justify-content: space-around; margin-top: 10px; }
+        .w-btn { padding: 8px 25px; border-radius: 20px; border: none; font-weight: bold; color: white; cursor: pointer; }
+        .btn-withdraw { background: #ff5e62; }
+        .btn-deposit { background: #10b981; }
+
+        /* Game Timer Card */
+        .timer-card { background: linear-gradient(135deg, #ff5e62, #ff8066); border-radius: 12px; padding: 15px; color: white; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .timer-left h3 { font-size: 14px; margin-bottom: 8px; opacity: 0.9; }
+        .recent-balls { display: flex; gap: 4px; }
+        .mini-ball { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; color: white; border: 1px solid rgba(255,255,255,0.4); }
+        .bg-green { background: #10b981; }
+        .bg-red { background: #ef4444; }
+        .bg-violet { background: #8b5cf6; }
+
+        .timer-right { text-align: right; }
+        .timer-right label { font-size: 12px; opacity: 0.9; }
+        .timer-digits { display: flex; gap: 3px; margin-top: 5px; justify-content: flex-end; }
+        .digit-box { background: white; color: #ff5e62; font-size: 16px; font-weight: bold; padding: 4px 6px; border-radius: 4px; }
+        .period-no { font-size: 11px; margin-top: 5px; opacity: 0.8; }
+
+        /* Color Buttons */
+        .color-btns { display: flex; gap: 10px; margin-bottom: 12px; }
+        .c-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; color: white; font-weight: bold; font-size: 15px; cursor: pointer; }
+
+        /* Number Grid 0-9 */
+        .number-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 12px; background: #f3f4f6; padding: 12px; border-radius: 12px; }
+        .num-ball { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; font-weight: bold; justify-self: center; cursor: pointer; box-shadow: 0 3px 6px rgba(0,0,0,0.15); }
+        .num-0 { background: linear-gradient(135deg, #8b5cf6 50%, #ef4444 50%); }
+        .num-5 { background: linear-gradient(135deg, #8b5cf6 50%, #10b981 50%); }
+
+        /* Multipliers & Big Small */
+        .mult-btns { display: flex; gap: 5px; margin-bottom: 12px; overflow-x: auto; }
+        .m-btn { flex: 1; padding: 6px; border: 1px solid #e5e7eb; background: #fff; border-radius: 6px; font-size: 12px; font-weight: bold; color: #666; cursor: pointer; text-align: center; }
+        .m-btn.active { background: #10b981; color: white; border-color: #10b981; }
+
+        .big-small-box { display: flex; border-radius: 25px; overflow: hidden; margin-bottom: 15px; }
+        .bs-btn { flex: 1; padding: 12px; border: none; color: white; font-weight: bold; font-size: 16px; cursor: pointer; }
+        .btn-big { background: #ffa502; }
+        .btn-small { background: #70a1ff; }
+
+        /* Game History Table */
+        .history-section { margin-top: 10px; }
+        .history-title { font-size: 15px; font-weight: bold; margin-bottom: 8px; color: #ff5e62; border-bottom: 2px solid #ff5e62; padding-bottom: 4px; }
+        table { width: 100%; border-collapse: collapse; text-align: center; font-size: 13px; }
+        th { background: #ff5e62; color: white; padding: 8px; }
+        td { padding: 8px; border-bottom: 1px solid #eee; }
+
+        /* Admin Control Panel Area */
+        .admin-card { width: 100%; max-width: 450px; background: #1e293b; color: white; padding: 15px; border-radius: 12px; margin-top: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        .admin-card h3 { color: #f59e0b; margin-bottom: 10px; font-size: 16px; border-bottom: 1px solid #334155; padding-bottom: 5px; }
+        .admin-field { margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .admin-field label { font-size: 13px; color: #cbd5e1; }
+        .admin-field select, .admin-field input { padding: 6px; border-radius: 4px; border: 1px solid #475569; background: #0f172a; color: white; width: 50%; }
+        .admin-btn { width: 100%; padding: 10px; background: #f59e0b; border: none; border-radius: 6px; font-weight: bold; color: black; cursor: pointer; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <span>‹</span>
+        <span>Daman WinGo 30s</span>
+        <span>🎧</span>
+    </div>
+
+    <div class="main-card">
+        <!-- Wallet Demo -->
+        <div class="wallet-box">
+            <div class="balance-title">Demo Wallet Balance</div>
+            <div class="balance-amount">₹<span id="demo-balance">1000.00</span></div>
+            <div class="wallet-btns">
+                <button class="w-btn btn-withdraw" onclick="alert('Demo Mode Only')">Withdraw</button>
+                <button class="w-btn btn-deposit" onclick="alert('Demo Mode Only')">Deposit</button>
+            </div>
+        </div>
+
+        <!-- Timer & Period Card -->
+        <div class="timer-card">
+            <div class="timer-left">
+                <h3>WinGo 30sec</h3>
+                <div class="recent-balls" id="mini-history">
+                    <!-- Recent balls added via JS -->
+                </div>
+            </div>
+            <div class="timer-right">
+                <label>Time remaining</label>
+                <div class="timer-digits">
+                    <span class="digit-box">0</span>
+                    <span class="digit-box">0</span>
+                    <span class="digit-box">:</span>
+                    <span class="digit-box" id="t-sec-1">3</span>
+                    <span class="digit-box" id="t-sec-2">0</span>
+                </div>
+                <div class="period-no" id="period-display">20261012100050419</div>
+            </div>
+        </div>
+
+        <!-- Color Selection Buttons -->
+        <div class="color-btns">
+            <button class="c-btn bg-green" onclick="placeBet('Green')">Green</button>
+            <button class="c-btn bg-violet" onclick="placeBet('Violet')">Violet</button>
+            <button class="c-btn bg-red" onclick="placeBet('Red')">Red</button>
+        </div>
+
+        <!-- Number Balls 0-9 -->
+        <div class="number-grid">
+            <div class="num-ball num-0" onclick="placeBet('0')">0</div>
+            <div class="num-ball bg-green" onclick="placeBet('1')">1</div>
+            <div class="num-ball bg-red" onclick="placeBet('2')">2</div>
+            <div class="num-ball bg-green" onclick="placeBet('3')">3</div>
+            <div class="num-ball bg-red" onclick="placeBet('4')">4</div>
+            <div class="num-ball num-5" onclick="placeBet('5')">5</div>
+            <div class="num-ball bg-red" onclick="placeBet('6')">6</div>
+            <div class="num-ball bg-green" onclick="placeBet('7')">7</div>
+            <div class="num-ball bg-red" onclick="placeBet('8')">8</div>
+            <div class="num-ball bg-green" onclick="placeBet('9')">9</div>
+        </div>
+
+        <!-- Multipliers -->
+        <div class="mult-btns">
+            <div class="m-btn active">X1</div>
+            <div class="m-btn">X5</div>
+            <div class="m-btn">X10</div>
+            <div class="m-btn">X20</div>
+            <div class="m-btn">X50</div>
+            <div class="m-btn">X100</div>
+        </div>
+
+        <!-- Big / Small Buttons -->
+        <div class="big-small-box">
+            <button class="bs-btn btn-big" onclick="placeBet('Big')">Big</button>
+            <button class="bs-btn btn-small" onclick="placeBet('Small')">Small</button>
+        </div>
+
+        <!-- Game History -->
+        <div class="history-section">
+            <div class="history-title">Game History</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Period</th>
+                        <th>Number</th>
+                        <th>Big/Small</th>
+                        <th>Color</th>
+                    </tr>
+                </thead>
+                <tbody id="history-table">
+                    <!-- History rows via JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Live Admin Control Panel -->
+    <div class="admin-card">
+        <h3>⚡ Admin Control Panel (Secret)</h3>
+        <div class="admin-field">
+            <label>Current Round Status:</label>
+            <span id="next-preview" style="color:#f59e0b; font-weight:bold;">Auto Mode</span>
+        </div>
+        <div class="admin-field">
+            <label>Set Next Color:</label>
+            <select id="admin-color">
+                <option value="Auto">Auto (Random)</option>
+                <option value="Green">Green</option>
+                <option value="Red">Red</option>
+                <option value="Violet">Violet</option>
+            </select>
+        </div>
+        <div class="admin-field">
+            <label>Set Next Number (0-9):</label>
+            <input type="number" id="admin-num" min="0" max="9" placeholder="Leave blank for Auto">
+        </div>
+        <button class="admin-btn" onclick="updateAdminChoice()">Set Next Result</button>
+    </div>
+
+    <script>
+        let balance = 1000.00;
+        let timeLeft = 30;
+        let currentPeriod = 20261012100050419;
+
+        let forcedColor = "Auto";
+        let forcedNumber = "";
+
+        // Sample initial history
+        const historyData = [
+            { period: 20261012100050418, num: 3, bs: "Small", color: "Green" },
+            { period: 20261012100050417, num: 9, bs: "Big", color: "Green" },
+            { period: 20261012100050416, num: 0, bs: "Small", color: "Violet" },
+            { period: 20261012100050415, num: 6, bs: "Big", color: "Red" }
+        ];
+
+        function renderHistory() {
+            const tbody = document.getElementById('history-table');
+            const mini = document.getElementById('mini-history');
+            tbody.innerHTML = '';
+            mini.innerHTML = '';
+
+            historyData.forEach((item, idx) => {
+                let colorBg = item.color === 'Green' ? '#10b981' : item.color === 'Red' ? '#ef4444' : '#8b5cf6';
+                
+                // Table Row
+                let tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${item.period}</td>
+                    <td style="color:${colorBg}; font-weight:bold; font-size:16px;">${item.num}</td>
+                    <td>${item.bs}</td>
+                    <td><span style="background:${colorBg}; width:12px; height:12px; border-radius:50%; display:inline-block;"></span></td>
+                `;
+                tbody.appendChild(tr);
+
+                // Mini Ball
+                if(idx < 5) {
+                    let m = document.createElement('div');
+                    m.className = `mini-ball ${item.color === 'Green' ? 'bg-green' : item.color === 'Red' ? 'bg-red' : 'bg-violet'}`;
+                    m.innerText = item.num;
+                    mini.appendChild(m);
+                }
+            });
+        }
+
+        function updateAdminChoice() {
+            forcedColor = document.getElementById('admin-color').value;
+            forcedNumber = document.getElementById('admin-num').value;
+
+            document.getElementById('next-preview').innerText = `Color: ${forcedColor} | Num: ${forcedNumber !== "" ? forcedNumber : "Auto"}`;
+            alert('Admin result updated for next round!');
+        }
+
+        function placeBet(type) {
+            if (balance >= 10) {
+                balance -= 10;
+                document.getElementById('demo-balance').innerText = balance.toFixed(2);
+                alert(`Demo Bet of ₹10 placed on: ${type}`);
+            } else {
+                alert('Demo balance finished! Refresh page to get more demo balance.');
+            }
+        }
+
+        function tick() {
+            timeLeft--;
+            if (timeLeft < 0) {
+                timeLeft = 30;
+                
+                // Determine Result
+                let finalNum;
+                if (forcedNumber !== "" && !isNaN(forcedNumber)) {
+                    finalNum = parseInt(forcedNumber);
+                } else {
+                    finalNum = Math.floor(Math.random() * 10);
+                }
+
+                let finalColor;
+                if (forcedColor !== "Auto") {
+                    finalColor = forcedColor;
+                } else {
+                    if ([1,3,7,9].includes(finalNum)) finalColor = "Green";
+                    else if ([2,4,6,8].includes(finalNum)) finalColor = "Red";
+                    else finalColor = "Violet";
+                }
+
+                let finalBS = finalNum >= 5 ? "Big" : "Small";
+
+                // Add to history
+                historyData.unshift({
+                    period: currentPeriod,
+                    num: finalNum,
+     <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daman WinGo Demo</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        body { background-color: #f7f8ff; color: #333; display: flex; flex-direction: column; align-items: center; padding-bottom: 40px; }
+        
+        /* Top Navigation Bar */
+        .navbar { background: linear-gradient(90deg, #ff5e62, #ff9966); width: 100%; max-width: 450px; padding: 15px; color: white; display: flex; justify-content: space-between; align-items: center; font-size: 20px; font-weight: bold; }
+        
+        .main-card { width: 100%; max-width: 450px; background: white; padding: 12px; }
+        
+        /* Balance & Wallet */
+        .wallet-box { background: #f8f9fa; border-radius: 12px; padding: 15px; text-align: center; margin-bottom: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+        .balance-title { font-size: 13px; color: #666; }
+        .balance-amount { font-size: 24px; font-weight: bold; color: #333; margin: 5px 0; }
+        .wallet-btns { display: flex; justify-content: space-around; margin-top: 10px; }
+        .w-btn { padding: 8px 25px; border-radius: 20px; border: none; font-weight: bold; color: white; cursor: pointer; }
+        .btn-withdraw { background: #ff5e62; }
+        .btn-deposit { background: #10b981; }
+
+        /* Game Timer Card */
+        .timer-card { background: linear-gradient(135deg, #ff5e62, #ff8066); border-radius: 12px; padding: 15px; color: white; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .timer-left h3 { font-size: 14px; margin-bottom: 8px; opacity: 0.9; }
+        .recent-balls { display: flex; gap: 4px; }
+        .mini-ball { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; color: white; border: 1px solid rgba(255,255,255,0.4); }
+        .bg-green { background: #10b981; }
+        .bg-red { background: #ef4444; }
+        .bg-violet { background: #8b5cf6; }
+
+        .timer-right { text-align: right; }
+        .timer-right label { font-size: 12px; opacity: 0.9; }
+        .timer-digits { display: flex; gap: 3px; margin-top: 5px; justify-content: flex-end; }
+        .digit-box { background: white; color: #ff5e62; font-size: 16px; font-weight: bold; padding: 4px 6px; border-radius: 4px; }
+        .period-no { font-size: 11px; margin-top: 5px; opacity: 0.8; }
+
+        /* Color Buttons */
+        .color-btns { display: flex; gap: 10px; margin-bottom: 12px; }
+        .c-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; color: white; font-weight: bold; font-size: 15px; cursor: pointer; }
+
+        /* Number Grid 0-9 */
+        .number-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 12px; background: #f3f4f6; padding: 12px; border-radius: 12px; }
+        .num-ball { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; font-weight: bold; justify-self: center; cursor: pointer; box-shadow: 0 3px 6px rgba(0,0,0,0.15); }
+        .num-0 { background: linear-gradient(135deg, #8b5cf6 50%, #ef4444 50%); }
+        .num-5 { background: linear-gradient(135deg, #8b5cf6 50%, #10b981 50%); }
+
+        /* Multipliers & Big Small */
+        .mult-btns { display: flex; gap: 5px; margin-bottom: 12px; overflow-x: auto; }
+        .m-btn { flex: 1; padding: 6px; border: 1px solid #e5e7eb; background: #fff; border-radius: 6px; font-size: 12px; font-weight: bold; color: #666; cursor: pointer; text-align: center; }
+        .m-btn.active { background: #10b981; color: white; border-color: #10b981; }
+
+        .big-small-box { display: flex; border-radius: 25px; overflow: hidden; margin-bottom: 15px; }
+        .bs-btn { flex: 1; padding: 12px; border: none; color: white; font-weight: bold; font-size: 16px; cursor: pointer; }
+        .btn-big { background: #ffa502; }
+        .btn-small { background: #70a1ff; }
+
+        /* Game History Table */
+        .history-section { margin-top: 10px; }
+        .history-title { font-size: 15px; font-weight: bold; margin-bottom: 8px; color: #ff5e62; border-bottom: 2px solid #ff5e62; padding-bottom: 4px; }
+        table { width: 100%; border-collapse: collapse; text-align: center; font-size: 13px; }
+        th { background: #ff5e62; color: white; padding: 8px; }
+        td { padding: 8px; border-bottom: 1px solid #eee; }
+
+        /* Admin Control Panel Area */
+        .admin-card { width: 100%; max-width: 450px; background: #1e293b; color: white; padding: 15px; border-radius: 12px; margin-top: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        .admin-card h3 { color: #f59e0b; margin-bottom: 10px; font-size: 16px; border-bottom: 1px solid #334155; padding-bottom: 5px; }
+        .admin-field { margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .admin-field label { font-size: 13px; color: #cbd5e1; }
+        .admin-field select, .admin-field input { padding: 6px; border-radius: 4px; border: 1px solid #475569; background: #0f172a; color: white; width: 50%; }
+        .admin-btn { width: 100%; padding: 10px; background: #f59e0b; border: none; border-radius: 6px; font-weight: bold; color: black; cursor: pointer; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <span>‹</span>
+        <span>Daman WinGo 30s</span>
+        <span>🎧</span>
+    </div>
+
+    <div class="main-card">
+        <!-- Wallet Demo -->
+        <div class="wallet-box">
+            <div class="balance-title">Demo Wallet Balance</div>
+            <div class="balance-amount">₹<span id="demo-balance">1000.00</span></div>
+            <div class="wallet-btns">
+                <button class="w-btn btn-withdraw" onclick="alert('Demo Mode Only')">Withdraw</button>
+                <button class="w-btn btn-deposit" onclick="alert('Demo Mode Only')">Deposit</button>
+            </div>
+        </div>
+
+        <!-- Timer & Period Card -->
+        <div class="timer-card">
+            <div class="timer-left">
+                <h3>WinGo 30sec</h3>
+                <div class="recent-balls" id="mini-history">
+                    <!-- Recent balls added via JS -->
+                </div>
+            </div>
+            <div class="timer-right">
+                <label>Time remaining</label>
+                <div class="timer-digits">
+                    <span class="digit-box">0</span>
+                    <span class="digit-box">0</span>
+                    <span class="digit-box">:</span>
+                    <span class="digit-box" id="t-sec-1">3</span>
+                    <span class="digit-box" id="t-sec-2">0</span>
+                </div>
+                <div class="period-no" id="period-display">20261012100050419</div>
+            </div>
+        </div>
+
+        <!-- Color Selection Buttons -->
+        <div class="color-btns">
+            <button class="c-btn bg-green" onclick="placeBet('Green')">Green</button>
+            <button class="c-btn bg-violet" onclick="placeBet('Violet')">Violet</button>
+            <button class="c-btn bg-red" onclick="placeBet('Red')">Red</button>
+        </div>
+
+        <!-- Number Balls 0-9 -->
+        <div class="number-grid">
+            <div class="num-ball num-0" onclick="placeBet('0')">0</div>
+            <div class="num-ball bg-green" onclick="placeBet('1')">1</div>
+            <div class="num-ball bg-red" onclick="placeBet('2')">2</div>
+            <div class="num-ball bg-green" onclick="placeBet('3')">3</div>
+            <div class="num-ball bg-red" onclick="placeBet('4')">4</div>
+            <div class="num-ball num-5" onclick="placeBet('5')">5</div>
+            <div class="num-ball bg-red" onclick="placeBet('6')">6</div>
+            <div class="num-ball bg-green" onclick="placeBet('7')">7</div>
+            <div class="num-ball bg-red" onclick="placeBet('8')">8</div>
+            <div class="num-ball bg-green" onclick="placeBet('9')">9</div>
+        </div>
+
+        <!-- Multipliers -->
+        <div class="mult-btns">
+            <div class="m-btn active">X1</div>
+            <div class="m-btn">X5</div>
+            <div class="m-btn">X10</div>
+            <div class="m-btn">X20</div>
+            <div class="m-btn">X50</div>
+            <div class="m-btn">X100</div>
+        </div>
+
+        <!-- Big / Small Buttons -->
+        <div class="big-small-box">
+            <button class="bs-btn btn-big" onclick="placeBet('Big')">Big</button>
+            <button class="bs-btn btn-small" onclick="placeBet('Small')">Small</button>
+        </div>
+
+        <!-- Game History -->
+        <div class="history-section">
+            <div class="history-title">Game History</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Period</th>
+                        <th>Number</th>
+                        <th>Big/Small</th>
+                        <th>Color</th>
+                    </tr>
+                </thead>
+                <tbody id="history-table">
+                    <!-- History rows via JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Live Admin Control Panel -->
+    <div class="admin-card">
+        <h3>⚡ Admin Control Panel (Secret)</h3>
+        <div class="admin-field">
+            <label>Current Round Status:</label>
+            <span id="next-preview" style="color:#f59e0b; font-weight:bold;">Auto Mode</span>
+        </div>
+        <div class="admin-field">
+            <label>Set Next Color:</label>
+            <select id="admin-color">
+                <option value="Auto">Auto (Random)</option>
+                <option value="Green">Green</option>
+                <option value="Red">Red</option>
+                <option value="Violet">Violet</option>
+            </select>
+        </div>
+        <div class="admin-field">
+            <label>Set Next Number (0-9):</label>
+            <input type="number" id="admin-num" min="0" max="9" placeholder="Leave blank for Auto">
+        </div>
+        <button class="admin-btn" onclick="updateAdminChoice()">Set Next Result</button>
+    </div>
+
+    <script>
+        let balance = 1000.00;
+        let timeLeft = 30;
+        let currentPeriod = 20261012100050419;
+
+        let forcedColor = "Auto";
+        let forcedNumber = "";
+
+        // Sample initial history
+        const historyData = [
+            { period: 20261012100050418, num: 3, bs: "Small", color: "Green" },
+            { period: 20261012100050417, num: 9, bs: "Big", color: "Green" },
+            { period: 20261012100050416, num: 0, bs: "Small", color: "Violet" },
+            { period: 20261012100050415, num: 6, bs: "Big", color: "Red" }
+        ];
+
+        function renderHistory() {
+            const tbody = document.getElementById('history-table');
+            const mini = document.getElementById('mini-history');
+            tbody.innerHTML = '';
+            mini.innerHTML = '';
+
+            historyData.forEach((item, idx) => {
+                let colorBg = item.color === 'Green' ? '#10b981' : item.color === 'Red' ? '#ef4444' : '#8b5cf6';
+                
+                // Table Row
+                let tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${item.period}</td>
+                    <td style="color:${colorBg}; font-weight:bold; font-size:16px;">${item.num}</td>
+                    <td>${item.bs}</td>
+                    <td><span style="background:${colorBg}; width:12px; height:12px; border-radius:50%; display:inline-block;"></span></td>
+                `;
+                tbody.appendChild(tr);
+
+                // Mini Ball
+                if(idx < 5) {
+                    let m = document.createElement('div');
+                    m.className = `mini-ball ${item.color === 'Green' ? 'bg-green' : item.color === 'Red' ? 'bg-red' : 'bg-violet'}`;
+                    m.innerText = item.num;
+                    mini.appendChild(m);
+                }
+            });
+        }
+
+        function updateAdminChoice() {
+            forcedColor = document.getElementById('admin-color').value;
+            forcedNumber = document.getElementById('admin-num').value;
+
+            document.getElementById('next-preview').innerText = `Color: ${forcedColor} | Num: ${forcedNumber !== "" ? forcedNumber : "Auto"}`;
+            alert('Admin result updated for next round!');
+        }
+
+        function placeBet(type) {
+            if (balance >= 10) {
+                balance -= 10;
+                document.getElementById('demo-balance').innerText = balance.toFixed(2);
+                alert(`Demo Bet of ₹10 placed on: ${type}`);
+            } else {
+                alert('Demo balance finished! Refresh page to get more demo balance.');
+            }
+        }
+
+        function tick() {
+            timeLeft--;
+            if (timeLeft < 0) {
+                timeLeft = 30;
+                
+                // Determine Result
+                let finalNum;
+                if (forcedNumber !== "" && !isNaN(forcedNumber)) {
+                    finalNum = parseInt(forcedNumber);
+                } else {
+                    finalNum = Math.floor(Math.random() * 10);
+                }
+
+                let finalColor;
+                if (forcedColor !== "Auto") {
+                    finalColor = forcedColor;
+                } else {
+                    if ([1,3,7,9].includes(finalNum)) finalColor = "Green";
+                    else if ([2,4,6,8].includes(finalNum)) finalColor = "Red";
+                    else finalColor = "Violet";
+                }
+
+                let finalBS = finalNum >= 5 ? "Big" : "Small";
+
+                // Add to history
+                historyData.unshift({
+                    period: currentPeriod,
+                    num: finalNum,
+                    bs: finalBS,
+                    color: finalColor
+                });
+
+                currentPeriod++;
+                document.getElementById('period-display').innerText = currentPeriod;
+
+                // Reset Admin forced options
+                forcedColor = "Auto";
+                forcedNumber = "";
+                document.getElementById('admin-color').value = "Auto";
+                document.getElementById('admin-num').value = "";
+                document.getElementById('next-preview').innerText = "Auto Mode";
+
+                renderHistory();
+            }
+
+            let s1 = Math.floor(timeLeft / 10);
+            let s2 = timeLeft % 10;
+            document.getElementById('t-sec-1').innerText = s1;
+            document.getElementById('t-sec-2').innerText = s2;
+        }
+
+        renderHistory();
+        setInterval(tick, 1000);
+    </script>
+</body>
+</html>
+               bs: finalBS,
+                    color: finalColor
+                });
+
+                currentPeriod++;
+                document.getElementById('period-display').innerText = currentPeriod;
+
+                // Reset Admin forced options
+                forcedColor = "Auto";
+                forcedNumber = "";
+                document.getElementById('admin-color').value = "Auto";
+                document.getElementById('admin-num').value = "";
+                document.getElementById('next-preview').innerText = "Auto Mode";
+
+                renderHistory();
+            }
+
+            let s1 = Math.floor(timeLeft / 10);
+            let s2 = timeLeft % 10;
+            document.getElementById('t-sec-1').innerText = s1;
+            document.getElementById('t-sec-2').innerText = s2;
+        }
+
+        renderHistory();
+        setInterval(tick, 1000);
+    </script>
+</body>
+  </html>
+              
