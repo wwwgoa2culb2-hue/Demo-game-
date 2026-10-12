@@ -1,312 +1,233 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WinGo Smooth Demo Game</title>
+    <title>WinGo Game</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
-        body { background-color: #f1f3f6; color: #333; display: flex; flex-direction: column; align-items: center; padding-bottom: 50px; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #0f172a;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 420px;
+            background-color: #1e293b;
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        .header {
+            text-align: center;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #334155;
+            margin-bottom: 16px;
+        }
+        .header h2 {
+            color: #38bdf8;
+            font-size: 22px;
+        }
+        .game-card {
+            background: #0f172a;
+            border-radius: 10px;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border: 1px solid #334155;
+        }
+        .period-info h4 {
+            color: #94a3b8;
+            font-size: 14px;
+        }
+        .period-info p {
+            font-size: 18px;
+            font-weight: bold;
+            color: #f8fafc;
+            margin-top: 4px;
+        }
+        .timer-info h4 {
+            color: #94a3b8;
+            font-size: 14px;
+            text-align: right;
+        }
+        .timer-box {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ef4444;
+            margin-top: 4px;
+            text-align: right;
+        }
+        .bet-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .btn-green { background-color: #22c55e; color: white; }
+        .btn-violet { background-color: #8b5cf6; color: white; }
+        .btn-red { background-color: #ef4444; color: white; }
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+        }
+        .numbers-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .num-btn {
+            background-color: #334155;
+            color: white;
+            border: 1px solid #475569;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+        }
+        .big-small {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .btn-big { background-color: #eab308; color: #000; flex: 1; font-weight: bold; padding: 12px; border-radius: 8px; border: none; cursor: pointer; }
+        .btn-small { background-color: #3b82f6; color: white; flex: 1; font-weight: bold; padding: 12px; border-radius: 8px; border: none; cursor: pointer; }
         
-        .header { background: linear-gradient(135deg, #ff4d4d, #f9cb28); width: 100%; max-width: 420px; padding: 12px 15px; color: white; display: flex; justify-content: space-between; align-items: center; font-size: 18px; font-weight: bold; }
-        
-        .container { width: 100%; max-width: 420px; background: #fff; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-
-        /* Wallet */
-        .wallet-card { background: #fff5f5; border: 1px solid #ffcccc; border-radius: 10px; padding: 12px; text-align: center; margin-bottom: 12px; }
-        .wallet-bal { font-size: 22px; font-weight: bold; color: #e74c3c; margin: 4px 0; }
-        .wallet-info { font-size: 11px; color: #888; }
-
-        /* Timer Card */
-        .timer-card { background: linear-gradient(135deg, #ff5e62, #ff9966); border-radius: 10px; padding: 15px; color: white; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .timer-digits { font-size: 22px; font-weight: bold; background: rgba(0,0,0,0.15); padding: 4px 10px; border-radius: 6px; letter-spacing: 2px; }
-
-        /* Betting Section */
-        .bet-section { background: #f8f9fa; padding: 12px; border-radius: 10px; margin-bottom: 12px; }
-        .section-title { font-size: 13px; font-weight: bold; margin-bottom: 8px; color: #555; }
-        
-        .color-row { display: flex; gap: 8px; margin-bottom: 10px; }
-        .btn-col { flex: 1; padding: 10px; border: none; border-radius: 6px; color: white; font-weight: bold; font-size: 13px; cursor: pointer; }
-        .bg-green { background-color: #27ae60; }
-        .bg-violet { background-color: #9b59b6; }
-        .bg-red { background-color: #e74c3c; }
-
-        /* Number Grid 0-9 */
-        .number-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; background: #fff; padding: 10px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #e1e2e6; }
-        .num-circle { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; font-weight: bold; justify-self: center; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
-        .c-0 { background: linear-gradient(135deg, #9b59b6 50%, #e74c3c 50%); }
-        .c-5 { background: linear-gradient(135deg, #9b59b6 50%, #27ae60 50%); }
-
-        .bs-row { display: flex; gap: 10px; margin-bottom: 10px; }
-        .btn-bs { flex: 1; padding: 12px; border: none; border-radius: 8px; color: white; font-weight: bold; font-size: 15px; cursor: pointer; }
-        .btn-big { background-color: #f39c12; }
-        .btn-small { background-color: #3498db; }
-
-        .amount-row { display: flex; gap: 5px; margin-bottom: 10px; }
-        .amt-btn { flex: 1; padding: 6px; background: #fff; border: 1px solid #ccc; border-radius: 4px; font-size: 12px; font-weight: bold; cursor: pointer; text-align: center; }
-        .amt-btn.active { background: #e74c3c; color: white; border-color: #e74c3c; }
-
-        .active-bet-box { background: #eef2f7; padding: 10px; border-radius: 6px; font-size: 13px; margin-bottom: 5px; text-align: center; color: #333; font-weight: bold; border: 1px solid #d1d5db; }
-
-        /* History */
-        .history-box { margin-top: 15px; }
-        .history-title { font-size: 14px; font-weight: bold; color: #e74c3c; margin-bottom: 8px; border-bottom: 2px solid #e74c3c; padding-bottom: 4px; }
-        table { width: 100%; border-collapse: collapse; text-align: center; font-size: 12px; }
-        th { background: #e74c3c; color: white; padding: 6px; }
-        td { padding: 6px; border-bottom: 1px solid #eee; }
-
-        /* Admin Panel */
-        .admin-box { width: 100%; max-width: 420px; background: #1e293b; color: white; padding: 15px; border-radius: 10px; margin-top: 15px; }
-        .admin-box h3 { color: #f39c12; font-size: 15px; margin-bottom: 10px; border-bottom: 1px solid #334155; padding-bottom: 5px; }
-        .preview-box { background: #0f172a; border: 1px dashed #f39c12; padding: 10px; border-radius: 6px; margin-bottom: 10px; font-size: 13px; color: #f39c12; }
-        .admin-group { margin-bottom: 10px; }
-        .admin-group label { display: block; font-size: 12px; color: #cbd5e1; margin-bottom: 3px; }
-        .admin-group select, .admin-group input { width: 100%; padding: 8px; background: #0f172a; color: white; border: 1px solid #475569; border-radius: 5px; font-size: 13px; }
-        .admin-btn { width: 100%; padding: 10px; background: #f39c12; color: #000; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 5px; }
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .history-table th, .history-table td {
+            padding: 8px;
+            text-align: center;
+            border-bottom: 1px solid #334155;
+            font-size: 14px;
+        }
+        .history-table th {
+            color: #94a3b8;
+        }
     </style>
 </head>
 <body>
 
+<div class="container">
     <div class="header">
-        <span>&larr;</span>
-        <span>WinGo Smooth Demo</span>
-        <span>&#127918;</span>
+        <h2>WinGo 1 Min</h2>
     </div>
 
-    <div class="container">
-        <!-- Wallet -->
-        <div class="wallet-card">
-            <div style="font-size:12px; color:#666;">Practice Wallet Balance</div>
-            <div class="wallet-bal">₹<span id="balance">1000.00</span></div>
-            <div class="wallet-info">No Real Money / Smooth Practice Mode</div>
+    <div class="game-card">
+        <div class="period-info">
+            <h4>Period Number</h4>
+            <p id="period">20261012001</p>
         </div>
-
-        <!-- Timer Card -->
-        <div class="timer-card">
-            <div>
-                <h3 style="font-size:14px; margin-bottom:3px;">WinGo 30Sec</h3>
-                <p style="font-size:10px; opacity:0.9;" id="period-no">Period: 2026101201</p>
-            </div>
-            <div style="text-align:right;">
-                <div style="font-size:11px; opacity:0.9;">Time remaining</div>
-                <div class="timer-digits" id="timer">00:30</div>
-            </div>
-        </div>
-
-        <!-- Betting Section -->
-        <div class="bet-section">
-            <div class="section-title">1. Select Amount (₹)</div>
-            <div class="amount-row">
-                <div class="amt-btn active" onclick="setAmount(10, this)">10</div>
-                <div class="amt-btn" onclick="setAmount(50, this)">50</div>
-                <div class="amt-btn" onclick="setAmount(100, this)">100</div>
-                <div class="amt-btn" onclick="setAmount(500, this)">500</div>
-                <div class="amt-btn" onclick="setAmount(1000, this)">1000</div>
-            </div>
-
-            <div class="section-title">2. Choose Color / Number / Size</div>
-            
-            <div class="color-row">
-                <button class="btn-col bg-green" onclick="placeBet('Green', 'Color')">Green</button>
-                <button class="btn-col bg-violet" onclick="placeBet('Violet', 'Color')">Violet</button>
-                <button class="btn-col bg-red" onclick="placeBet('Red', 'Color')">Red</button>
-            </div>
-
-            <!-- Number Grid 0-9 -->
-            <div class="number-grid">
-                <div class="num-circle c-0" onclick="placeBet('0', 'Number')">0</div>
-                <div class="num-circle bg-green" onclick="placeBet('1', 'Number')">1</div>
-                <div class="num-circle bg-red" onclick="placeBet('2', 'Number')">2</div>
-                <div class="num-circle bg-green" onclick="placeBet('3', 'Number')">3</div>
-                <div class="num-circle bg-red" onclick="placeBet('4', 'Number')">4</div>
-                <div class="num-circle c-5" onclick="placeBet('5', 'Number')">5</div>
-                <div class="num-circle bg-red" onclick="placeBet('6', 'Number')">6</div>
-                <div class="num-circle bg-green" onclick="placeBet('7', 'Number')">7</div>
-                <div class="num-circle bg-red" onclick="placeBet('8', 'Number')">8</div>
-                <div class="num-circle bg-green" onclick="placeBet('9', 'Number')">9</div>
-            </div>
-
-            <div class="bs-row">
-                <button class="btn-bs btn-big" onclick="placeBet('Big', 'Size')">Big (5-9)</button>
-                <button class="btn-bs btn-small" onclick="placeBet('Small', 'Size')">Small (0-4)</button>
-            </div>
-
-            <div class="active-bet-box" id="current-bet-status">
-                Selected Bet: None
-            </div>
-        </div>
-
-        <!-- History Table -->
-        <div class="history-box">
-            <div class="history-title">Game History</div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Period</th>
-                        <th>Number</th>
-                        <th>Size</th>
-                        <th>Color</th>
-                    </tr>
-                </thead>
-                <tbody id="history-body"></tbody>
-            </table>
+        <div class="timer-info">
+            <h4>Time Remaining</h4>
+            <div class="timer-box" id="timer">00:30</div>
         </div>
     </div>
 
-    <!-- Admin Panel -->
-    <div class="admin-box">
-        <h3>⚙️ Admin Control & Preview</h3>
-        <div class="preview-box" id="preview-display">
-            🔮 <b>Upcoming Result:</b> Calculating...
-        </div>
-
-        <div class="admin-group">
-            <label>Force Next Color:</label>
-            <select id="admin-color" onchange="updatePreviewText()">
-                <option value="Auto">Auto (Random / Based on Number)</option>
-                <option value="Green">Green</option>
-                <option value="Violet">Violet</option>
-                <option value="Red">Red</option>
-            </select>
-        </div>
-        <div class="admin-group">
-            <label>Force Next Number (0-9):</label>
-            <input type="number" id="admin-num" min="0" max="9" placeholder="Leave blank for random" oninput="updatePreviewText()">
-        </div>
-        <button class="admin-btn" onclick="saveAdmin()">Lock Next Result</button>
+    <div class="bet-buttons">
+        <button class="btn btn-green">Green</button>
+        <button class="btn btn-violet">Violet</button>
+        <button class="btn btn-red">Red</button>
     </div>
 
-    <script>
-        let balance = 1000.00;
-        let timeLeft = 30;
-        let period = 2026101201;
-        let selectedAmount = 10;
-        let userBet = null;
+    <div class="numbers-grid">
+        <button class="num-btn">0</button>
+        <button class="num-btn">1</button>
+        <button class="num-btn">2</button>
+        <button class="num-btn">3</button>
+        <button class="num-btn">4</button>
+        <button class="num-btn">5</button>
+        <button class="num-btn">6</button>
+        <button class="num-btn">7</button>
+        <button class="num-btn">8</button>
+        <button class="num-btn">9</button>
+    </div>
 
-        let forceCol = "Auto";
-        let forceNum = "";
+    <div class="big-small">
+        <button class="btn-big">Big</button>
+        <button class="btn-small">Small</button>
+    </div>
 
-        let historyList = [
-            { period: 2026101200, num: 3, size: "Small", color: "Green" },
-            { period: 2026101199, num: 8, size: "Big", color: "Red" }
-        ];
+    <h3 style="margin-bottom: 10px; font-size: 16px; color: #94a3b8;">Game History</h3>
+    <table class="history-table">
+        <thead>
+            <tr>
+                <th>Period</th>
+                <th>Number</th>
+                <th>Big/Small</th>
+                <th>Color</th>
+            </tr>
+        </thead>
+        <tbody id="historyBody">
+            <tr>
+                <td>20261012000</td>
+                <td>7</td>
+                <td style="color: #eab308;">Big</td>
+                <td style="color: #22c55e;">Green</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
-        function setAmount(amt, element) {
-            selectedAmount = amt;
-            document.querySelectorAll('.amt-btn').forEach(btn => btn.classList.remove('active'));
-            element.classList.add('active');
-        }
+<script>
+    let timeLeft = 30;
+    let periodNum = 20261012001;
 
-        function placeBet(choice, category) {
-            if (balance >= selectedAmount) {
-                userBet = { type: choice, category: category, amount: selectedAmount };
-                // बिना किसी पॉप-अप अलर्ट के चुपचाप सलेक्टेड बेट दिखाएगा
-                document.getElementById('current-bet-status').innerHTML = `Selected Bet: ₹${selectedAmount} on <span style="color:#e74c3c;">${choice}</span> (${category})`;
-            } else {
-                // यहाँ सिर्फ बैलेंस कम होने पर चेतावनी दी जाएगी
-                document.getElementById('current-bet-status').innerHTML = `<span style="color:red;">Insufficient Balance!</span>`;
-            }
-        }
-
-        function updatePreviewText() {
-            let n = document.getElementById('admin-num').value;
-            let c = document.getElementById('admin-color').value;
-            
-            let previewNum = n !== "" ? n : "Random (0-9)";
-            let previewCol = c !== "Auto" ? c : (n !== "" ? ([1,3,7,9].includes(parseInt(n)) ? "Green" : [2,4,6,8].includes(parseInt(n)) ? "Red" : "Violet") : "Auto / Random");
-
-            document.getElementById('preview-display').innerHTML = `🔮 <b>Upcoming Result:</b> Number -> <b>${previewNum}</b> | Color -> <b style="color:${previewCol==='Green'?'#27ae60':previewCol==='Red'?'#e74c3c':'#f39c12'}">${previewCol}</b>`;
-        }
-
-        function saveAdmin() {
-            forceCol = document.getElementById('admin-color').value;
-            forceNum = document.getElementById('admin-num').value;
-            updatePreviewText();
-            // एडमिन सेटिंग सेव होने पर भी कोई रुकावट वाला अलर्ट नहीं, बल्कि सिर्फ प्रिवव्यू अपडेट होगा
-        }
-
-        function renderHistory() {
-            let tbody = document.getElementById('history-body');
-            tbody.innerHTML = '';
-            historyList.forEach(item => {
-                let colHex = item.color === 'Green' ? '#27ae60' : item.color === 'Red' ? '#e74c3c' : '#9b59b6';
-                let tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${item.period}</td>
-                    <td style="color:${colHex}; font-weight:bold; font-size:13px;">${item.num}</td>
-                    <td>${item.size}</td>
-                    <td><span style="background:${colHex}; width:10px; height:10px; border-radius:50%; display:inline-block;"></span></td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function runTimer() {
+    function updateTimer() {
+        let seconds = timeLeft < 10 ? "0" + timeLeft : timeLeft;
+        document.getElementById("timer").innerText = "00:" + seconds;
+        
+        if (timeLeft === 0) {
+            timeLeft = 30;
+            periodNum++;
+            document.getElementById("period").innerText = periodNum;
+            addNewHistory();
+        } else {
             timeLeft--;
-            if (timeLeft < 0) {
-                timeLeft = 30;
-                period++;
-                document.getElementById('period-no').innerText = "Period: " + period;
-
-                let finalNum;
-                if (forceNum !== "" && !isNaN(forceNum)) {
-                    finalNum = parseInt(forceNum);
-                } else {
-                    finalNum = Math.floor(Math.random() * 10);
-                }
-
-                let finalCol;
-                if (forceCol !== "Auto") {
-                    finalCol = forceCol;
-                } else {
-                    if ([1,3,7,9].includes(finalNum)) finalCol = "Green";
-                    else if ([2,4,6,8].includes(finalNum)) finalCol = "Red";
-                    else finalCol = "Violet";
-                }
-
-                let finalSize = finalNum >= 5 ? "Big" : "Small";
-
-                if (userBet) {
-                    balance -= userBet.amount;
-                    let won = false;
-                    if (userBet.category === 'Color' && userBet.type === finalCol) won = true;
-                    if (userBet.category === 'Size' && userBet.type === finalSize) won = true;
-                    if (userBet.category === 'Number' && parseInt(userBet.type) === finalNum) won = true;
-
-                    if (won) {
-                        let winReward = userBet.category === 'Number' ? userBet.amount * 9 : userBet.amount * 2;
-                        balance += winReward;
-                    }
-                    userBet = null;
-                    document.getElementById('current-bet-status').innerHTML = `Selected Bet: None`;
-                }
-
-                document.getElementById('balance').innerText = balance.toFixed(2);
-
-                historyList.unshift({
-                    period: period - 1,
-                    num: finalNum,
-                    size: finalSize,
-                    color: finalCol
-                });
-
-                if(historyList.length > 5) historyList.pop();
-                renderHistory();
-
-                forceCol = "Auto";
-                forceNum = "";
-                document.getElementById('admin-color').value = "Auto";
-                document.getElementById('admin-num').value = "";
-                updatePreviewText();
-            }
-
-            let secStr = timeLeft < 10 ? "0" + timeLeft : timeLeft;
-            document.getElementById('timer').innerText = "00:" + secStr;
         }
+    }
 
-        renderHistory();
-        updatePreviewText();
-        setInterval(runTimer, 1000);
-    </script>
+    function addNewHistory() {
+        let randomNum = Math.floor(Math.random() * 10);
+        let bigSmall = randomNum >= 5 ? "Big" : "Small";
+        let color = randomNum % 2 === 0 ? "Red" : "Green";
+        
+        let historyBody = document.getElementById("historyBody");
+        let newRow = `
+            <tr>
+                <td>${periodNum - 1}</td>
+                <td>${randomNum}</td>
+                <td>${bigSmall}</td>
+                <td style="color: ${color === 'Red' ? '#ef4444' : '#22c55e'}">${color}</td>
+            </tr>
+        `;
+        historyBody.insertAdjacentHTML('afterbegin', newRow);
+    }
+
+    setInterval(updateTimer, 1000);
+</script>
+
 </body>
 </html>
