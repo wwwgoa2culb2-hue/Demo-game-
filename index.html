@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demo Game - Free Practice</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f5ff;
+  color: #252b3a;
+}
+
+header {
+  background: linear-gradient(100deg, #fa5965, #ff9186);
+  color: white;
+  padding: 20px;
+  text-align: center;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.notice {
+  margin: 12px;
+  padding: 12px;
+  background: #fff4d6;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 13px;
+}
+
+.periods {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+  margin: 12px;
+}
+
+.period {
+  border: 0;
+  border-radius: 10px;
+  padding: 12px 2px;
+  background: white;
+  color: #555;
+  font-weight: bold;
+}
+
+.period.active {
+  background: #fa6269;
+  color: white;
+}
+
+.panel {
+  margin: 12px;
+  padding: 16px;
+  border-radius: 15px;
+  background: white;
+}
+
+.timerbox {
+  background: #fa6269;
+  color: white;
+  padding: 15px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+#timer {
+  font-size: 35px;
+  font-weight: bold;
+}
+
+#periodId {
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.colors {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+button {
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.colorbtn {
+  border: none;
+  color: white;
+  padding: 15px 3px;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+.green { background: #18b66b; }
+.red { background: #fa5965; }
+.violet { background: #b85be8; }
+
+.numbers {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+
+.number {
+  height: 53px;
+  width: 53px;
+  max-width: 100%;
+  justify-self: center;
+  border-radius: 50%;
+  border: 3px solid #e5e8f3;
+  background: white;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.number.selected {
+  outline: 3px solid #ffc24b;
+}
+
+.bigsmall {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.bigsmall button {
+  border: none;
+  padding: 15px;
+  border-radius: 25px;
+  color: white;
+  background: #f5a64b;
+}
+
+.bigsmall button:last-child {
+  background: #65a4f5;
+}
+
+.selection {
+  margin-top: 15px;
+  background: #f2f4fc;
+  padding: 12px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.history {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.history th {
+  background: #fa6269;
+  color: white;
+}
+
+.history th, .history td {
+  padding: 12px 5px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+}
+
+.dot {
+  display: inline-block;
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+}
+
+.admin {
+  background: #fff9e9;
+  border: 1px solid #f1dba0;
+}
+
+.admin input, .admin select {
+  width: 100%;
+  padding: 11px;
+  margin: 6px 0 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: white;
+}
+
+.admin button, .practice {
+  border: none;
+  border-radius: 8px;
+  background: #333b52;
+  color: white;
+  padding: 12px;
+  width: 100%;
+}
+
+.smallnote {
+  font-size: 12px;
+  color: #666;
+  line-height: 1.5;
+}
+</style>
+</head>
+
+<body>
+
+<header>Demo Game</header>
+
+<div class="notice">
+  FREE PRACTICE MODE — No real money, deposits or withdrawals.
+</div>
+
+<div class="periods">
+  <button class="period active" data-seconds="30">30 Sec</button>
+  <button class="period" data-seconds="60">1 Min</button>
+  <button class="period" data-seconds="180">3 Min</button>
+  <button class="period" data-seconds="300">5 Min</button>
+</div>
+
+<div class="panel">
+  <div class="timerbox">
+    <div>Time Remaining</div>
+    <div id="timer">00:30</div>
+    <div id="periodId">Demo round: 1</div>
+  </div>
+</div>
+
+<div class="panel">
+  <h3>Choose Color</h3>
+  <div class="colors">
+    <button class="colorbtn green" data-color="Green">Green</button>
+    <button class="colorbtn violet" data-color="Violet">Violet</button>
+    <button class="colorbtn red" data-color="Red">Red</button>
+  </div>
+
+  <h3>Choose Number</h3>
+  <div class="numbers" id="numbers"></div>
+
+  <div class="bigsmall">
+    <button data-size="Big">Big (5–9)</button>
+    <button data-size="Small">Small (0–4)</button>
+  </div>
+
+  <div class="selection" id="selection">
+    Your practice selection: None
+  </div>
+</div>
+
+<div class="panel">
+  <h3>Game History</h3>
+  <table class="history">
+    <thead>
+      <tr>
+        <th>Round</th>
+        <th>Number</th>
+        <th>Size</th>
+        <th>Color</th>
+      </tr>
+    </thead>
+    <tbody id="history"></tbody>
+  </table>
+</div>
+
+<div class="panel admin">
+  <h3>Admin Demo Panel</h3>
+  <p class="smallnote">
+    Set the next practice result manually. This is a local demo
+    control, not a secure online administrator account.
+  </p>
+
+  <label for="adminNumber">Next result number</label>
+  <select id="adminNumber">
+    <option value="">Automatic demo result</option>
+    <option value="0">0</option>
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+    <option value="6">6</option>
+    <option value="7">7</option>
+    <option value="8">8</option>
+    <option value="9">9</option>
+  </select>
+
+  <label for="adminColor">Override result color (optional)</label>
+  <select id="adminColor">
+    <option value="">Use number's demo color</option>
+    <option value="Green">Green</option>
+    <option value="Red">Red</option>
+    <option value="Violet">Violet</option>
+  </select>
+
+  <button id="saveAdmin">Save next demo result</button>
+  <p id="adminStatus" class="smallnote"></p>
+</div>
+
+<div class="panel">
+  <h3>How this demo works</h3>
+  <p class="smallnote">
+    The displayed results are generated by this website's own
+    demo logic. They are not copied from Daman or another game,
+    and they do not predict real-world results.
+  </p>
+  <button class="practice" id="clearHistory">Clear Game History</button>
+</div>
+
+<script>
+let duration = 30;
+let remaining = duration;
+let round = 1;
+let selectedColor = "";
+let selectedNumber = "";
+let selectedSize = "";
+let pendingNumber = "";
+let pendingColor = "";
+let historyItems = [];
+
+const timer = document.getElementById("timer");
+const periodId = document.getElementById("periodId");
+const historyBody = document.getElementById("history");
+const selection = document.getElementById("selection");
+
+function getColor(n) {
+  if (n === 0 || n === 5) return "Violet";
+  if ([1, 3, 7, 9].includes(n)) return "Green";
+  return "Red";
+}
+
+function colorClass(color) {
+  return color.toLowerCase();
+}
+
+function renderNumbers() {
+  const container = document.getElementById("numbers");
+  container.innerHTML = "";
+
+  for (let n = 0; n <= 9; n++) {
+    const btn = document.createElement("button");
+    btn.className = "number";
+    btn.textContent = n;
+    btn.style.color = getColor(n) === "Violet"
+      ? "#b85be8"
+      : getColor(n) === "Green" ? "#18b66b" : "#fa5965";
+
+    btn.onclick = () => {
+      selectedNumber = String(n);
+      selectedColor = getColor(n);
+      selectedSize = n >= 5 ? "Big" : "Small";
+      updateSelection();
+      renderNumbers();
+    };
+
+    if (selectedNumber === String(n)) {
+      btn.classList.add("selected");
+    }
+
+    container.appendChild(btn);
+  }
+}
+
+function updateSelection() {
+  selection.textContent =
+    "Your practice selection: " +
+    (selectedNumber !== "" ? "Number " + selectedNumber : "No number") +
+    " | " + (selectedColor || "No color") +
+    " | " + (selectedSize || "No size");
+}
+
+document.querySelectorAll(".colorbtn").forEach(btn => {
+  btn.onclick = () => {
+    selectedColor = btn.dataset.color;
+    updateSelection();
+  };
+});
+
+document.querySelectorAll(".bigsmall button").forEach(btn => {
+  btn.onclick = () => {
+    selectedSize = btn.dataset.size;
+    updateSelection();
+  };
+});
+
+document.querySelectorAll(".period").forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll(".period").forEach(b =>
+      b.classList.remove("active")
+    );
+
+    btn.classList.add("active");
+    duration = Number(btn.dataset.seconds);
+    remaining = duration;
+    updateTimer();
+  };
+});
+
+function updateTimer() {
+  const mins = Math.floor(remaining / 60);
+  const secs = remaining % 60;
+  timer.textContent =
+    String(mins).padStart(2, "0") + ":" +
+    String(secs).padStart(2, "0");
+  periodId.textContent = "Demo round: " + round;
+}
+
+function finishRound() {
+  let n;
+
+  if (pendingNumber !== "") {
+    n = Number(pendingNumber);
+  } else {
+    n = Math.floor(Math.random() * 10);
+  }
+
+  const size = n >= 5 ? "Big" : "Small";
+  const color = pendingColor || getColor(n);
+
+  historyItems.unshift({
+    round: round,
+    number: n,
+    size: size,
+    color: color
+  });
+
+  historyItems = historyItems.slice(0, 20);
+  pendingNumber = "";
+  pendingColor = "";
+
+  document.getElementById("adminNumber").value = "";
+  document.getElementById("adminColor").value = "";
+  document.getElementById("adminStatus").textContent =
+    "Round completed. Next result is set to automatic mode.";
+
+  round++;
+  renderHistory();
+}
+
+function renderHistory() {
+  historyBody.innerHTML = "";
+
+  historyItems.forEach(item => {
+    const row = document.createElement("tr");
+    row.innerHTML =
+      "<td>" + item.round + "</td>" +
+      "<td><strong>" + item.number + "</strong></td>" +
+      "<td>" + item.size + "</td>" +
+      '<td><span class="dot" style="background:' +
+      (item.color === "Green" ? "#18b66b" :
+       item.color === "Red" ? "#fa5965" : "#b85be8") +
+      '"></span> ' + item.color + "</td>";
+
+    historyBody.appendChild(row);
+  });
+}
+
+document.getElementById("saveAdmin").onclick = () => {
+  pendingNumber = document.getElementById("adminNumber").value;
+  pendingColor = document.getElementById("adminColor").value;
+
+  document.getElementById("adminStatus").textContent =
+    "Saved for the next demo round.";
+};
+
+document.getElementById("clearHistory").onclick = () => {
+  historyItems = [];
+  renderHistory();
+};
+
+setInterval(() => {
+  remaining--;
+
+  if (remaining <= 0) {
+    finishRound();
+    remaining = duration;
+  }
+
+  updateTimer();
+}, 1000);
+
+renderNumbers();
+updateSelection();
+renderHistory();
+updateTimer();
+</script>
+
+</body>
+  </html>
